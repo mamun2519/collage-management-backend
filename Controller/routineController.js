@@ -94,3 +94,22 @@ exports.routineUpdate = async (req, res, next) => {
     });
   }
 };
+
+exports.createExamRoutine = async (req, res, next) => {
+  const id = req.params.id;
+  const routine = await Routine.findById(id);
+  console.log(routine);
+  if (!routine) {
+    res.status(500).json({
+      success: false,
+      message: "Routine Not found",
+    });
+  }
+  routine.examRoutine.push(req.body);
+  await routine.save({ validateBeforeSave: false });
+  res.status(200).json({
+    success: true,
+    message: "Exam Routine publish successFull",
+    routine,
+  });
+};

@@ -6,6 +6,7 @@ const {
   getSingleRoutine,
   routineDelete,
   routineUpdate,
+  createExamRoutine,
 } = require("../Controller/routineController");
 const router = express.Router();
 
@@ -15,4 +16,5 @@ router.get("/department", getDepartmentRoutine);
 router.delete("/department/:id", routineDelete);
 router.put("/department/:id", routineUpdate);
 router.get("/singleRoutine/:id", getSingleRoutine);
+router.post("/examRoutine/:id", createExamRoutine);
 module.exports = router;

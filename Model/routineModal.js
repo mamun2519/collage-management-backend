@@ -365,6 +365,16 @@ const routneShema = new mongoose.Schema({
       },
     },
   ],
+
+  examRoutine:[
+    // {
+    //   examName:{
+    //     type: String,
+    // required: true,
+    //   },
+
+    // }
+  ]
 });
 
 const routineModel = new mongoose.model("Routine", routneShema);
