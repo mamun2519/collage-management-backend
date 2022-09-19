@@ -12,7 +12,7 @@ exports.studentAdmission = async (req, res, next) => {
 
 exports.getAllStudnt = async (req, res, next) => {
   const student = await Student.find({});
-  res.json({ success: true, message: student });
+  res.json({ success: true, student: student });
 };
 
 exports.getSingleStundetInfo = async (req, res, next) => {
@@ -35,20 +35,17 @@ exports.getSingleStundetInfo = async (req, res, next) => {
   }
 };
 
-
 // please not font and department case lowarcase set
-exports.getDepartmentStudent = async (req , res , next) =>{
-  const {department} = req.query
-  const departmentOfStudent = await Student.find({department})
-  console.log(departmentOfStudent , department);
-  if(departmentOfStudent.length == 0){
-    res.json({success:false , message: "Thare Are No Deparment Student"})
-
+exports.getDepartmentStudent = async (req, res, next) => {
+  const { department } = req.query;
+  const departmentOfStudent = await Student.find({ department });
+  console.log(departmentOfStudent, department);
+  if (departmentOfStudent.length == 0) {
+    res.json({ success: false, message: "Thare Are No Deparment Student" });
+  } else {
+    res.json({ success: true, student: departmentOfStudent });
   }
-  else{
-  res.json({success:true , student: departmentOfStudent})
-  }
-}
+};
 
 exports.searchStudentInformation = async (req, res, next) => {
   try {
@@ -180,7 +177,7 @@ exports.getStudentResult = async (req, res, next) => {
       const studentResult = student.result.filter(
         (exam) => examName == exam.examName
       );
-    
+
       if (studentResult.length == 0) {
         res.status(404).json({
           success: false,
@@ -200,9 +197,9 @@ exports.getStudentResult = async (req, res, next) => {
   }
 };
 
-exports.resultUpdate = async (req , res , next) =>{
+exports.resultUpdate = async (req, res, next) => {
   try {
-    const id = req.params.id
+    const id = req.params.id;
     const {
       educationLevel,
       department,
@@ -210,7 +207,8 @@ exports.resultUpdate = async (req , res , next) =>{
       session,
       classRoll,
       examName,
-    } = req.body;
+    } = req.query;
+    const { subjectCode, subjectName, minMarks, maxMark, grade } = req.body;
 
     let student = await Student.findOne({
       $and: [
@@ -231,16 +229,20 @@ exports.resultUpdate = async (req , res , next) =>{
       const studentResult = student.result.filter(
         (exam) => examName == exam.examName
       );
-      
+
       if (studentResult.length == 0) {
         res.status(404).json({
           success: false,
           message: "Please provide valid student Information",
         });
       }
-      const s = student.result.filter((exam) => exam._id == id)
-      console.log(s[0].minMarks = 5);
-      const news = s[0].minMarks = 5
+      const s = student.result.filter((exam) => exam._id == id);
+      console.log((s[0].minMarks = 5));
+      s[0].subjectCode = subjectCode;
+      s[0].subjectName = subjectName;
+      s[0].minMarks = minMarks;
+      s[0].maxMark = maxMark;
+      s[0].grade = grade;
       await student.save({ validateBeforeSave: false });
 
       res.status(200).json({
@@ -253,5 +255,4 @@ exports.resultUpdate = async (req , res , next) =>{
   } catch (e) {
     console.log(e);
   }
-
-}
+};

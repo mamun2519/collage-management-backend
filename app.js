@@ -1,22 +1,25 @@
-const express = require('express');
-const app = express()
-const cors = require('cors')
+const express = require("express");
+const app = express();
+const cors = require("cors");
 
-// middelwar 
+// middelwar
 
-app.use(express.json())
+app.use(express.json());
 // app.use(fileUpload());
 app.use(express.static("public"));
-app.use(cors())
+app.use(cors());
 
-// all router model 
-const studentRouter = require('./Router/studentRouter')
+// all router model
+const studentRouter = require("./Router/studentRouter");
+const teacherRouter = require("./Router/teacherRouter");
+const routineRouter = require("./Router/routineRouter");
+// all Route api
+app.use("/v1/student", studentRouter);
+app.use("/v1/teacher", teacherRouter);
+app.use("/v1/routine", routineRouter);
 
-// all Route api 
-app.use('/v1/student' , studentRouter)
+app.use("/", (req, res) => {
+  res.send("hellw world");
+});
 
-app.use('/' , (req , res)=>{
-      res.send("hellw world")
-})
-
-module.exports = app
+module.exports = app;
