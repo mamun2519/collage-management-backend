@@ -2,8 +2,31 @@ const Student = require("../Model/studentModal");
 const cloudinary = require("cloudinary");
 
 exports.studentAdmission = async (req, res, next) => {
-  const studentInfo = req.body;
-  await Student.create(studentInfo);
+  const {studentInfo , admissionInfo, email} = req.body;
+  const {admissionType,board,department,classs,session,passingYear,passingAcademy,admissionFee,} = admissionInfo.data
+  const {name , address , birthday , country , gender , gerdianName ,  number , village ,  age , studentPhoto} = studentInfo
+  console.log(studentInfo);
+  // const myCloud = await cloudinary.v2.uploader.upload(studentPhoto, {
+  //   folder: "avatars",
+  //   width: 150,
+  //   crop: "scale",
+  // });
+  const admission={
+    
+      admissionType,board,department,classs,session,passingYear,passingAcademy,admissionFee,
+      subject: admissionInfo.subject,
+    name , address , birthday , country , gender , gerdianName ,  number , village ,  age
+    ,
+    email,
+    // studentPhoto: {
+    //   public_id:  myCloud.public_id,
+    //   url: myCloud.secure_url,
+    // }
+  
+  };
+  
+ 
+  await Student.create(admission);
   res.status(200).json({
     success: true,
     message: "Admission Successfull",

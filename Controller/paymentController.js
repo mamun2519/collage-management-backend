@@ -1,7 +1,7 @@
 
 const SSLCommerzPayment = require('sslcommerz-lts')
 const is_live = false //true for live, false for sandbox
-
+const stripe = require('stripe')('sk_test_51L1nmNCGpaTt0RU81oq26j6Ta7gwb9pGlOOwxjeXAQgefsXMvmRxFUopKE2St6GDbDpxjUug0KxRyqzL6oKarPcR00lqLjh70r')
 //sslcommerz init
 exports.sslPaymentGetWay = async (req , res, next) =>{
             const data = {
@@ -43,3 +43,30 @@ exports.sslPaymentGetWay = async (req , res, next) =>{
             });
        
 }
+
+
+
+exports.paymentGetWay = async (req, res, next) => {
+    try{
+      const service = req.body;
+      const price = service.price;
+      const amount = price * 100;
+    
+      // Create a PaymentIntent with the order amount and currency
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: "usd",
+        automatic_payment_methods: {
+          enabled: true,
+        },
+      });
+    
+      res.send({
+        clientSecrets: paymentIntent.client_secret,
+      });
+    }
+    catch(error){
+      console.log(error)
+    }
+   
+  };
