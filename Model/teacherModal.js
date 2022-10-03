@@ -5,7 +5,7 @@ const teacherShema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  department: {
+  classs: {
     type: String,
     required: true,
   },

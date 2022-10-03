@@ -17,7 +17,7 @@ exports.getAllTeacher = async (req, res, next) => {
 // please note case sensative
 exports.getDepartmentTeacher = async (req, res, next) => {
   const { department } = req.query;
-  const departmentOfStudent = await Teacher.find({ department });
+  const departmentOfStudent = await Teacher.find({ classs:department });
   if (departmentOfStudent.length == 0) {
     res.json({ success: false, message: "Thare Are No Deparment Teacher" });
   } else {

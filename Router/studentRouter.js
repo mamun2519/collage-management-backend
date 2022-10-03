@@ -10,10 +10,12 @@ const {
   getStudentResult,
   getDepartmentStudent,
   resultUpdate,
+  chackStudentAdmission,
 } = require("../Controller/studentController");
 const router = express.Router();
 
 router.post("/admission", studentAdmission);
+router.get("/chackadmission", chackStudentAdmission);
 router.get("/result", getStudentResult);
 router.get("/admission/:id", getSingleStundetInfo);
 router.get("/admission", getAllStudnt);

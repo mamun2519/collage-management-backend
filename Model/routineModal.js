@@ -5,7 +5,7 @@ const routneShema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  className: {
+  classs: {
     type: String,
     required: true,
   },

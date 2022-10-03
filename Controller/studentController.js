@@ -2,30 +2,61 @@ const Student = require("../Model/studentModal");
 const cloudinary = require("cloudinary");
 
 exports.studentAdmission = async (req, res, next) => {
-  const {studentInfo , admissionInfo, email} = req.body;
-  const {admissionType,board,department,classs,session,passingYear,passingAcademy,admissionFee,} = admissionInfo.data
-  const {name , address , birthday , country , gender , gerdianName ,  number , village ,  age , studentPhoto} = studentInfo
+  const { studentInfo, admissionInfo, email } = req.body;
+  const {
+    admissionType,
+    board,
+    department,
+    classs,
+    session,
+    passingYear,
+    passingAcademy,
+    admissionFee,
+  } = admissionInfo.data;
+  const {
+    name,
+    address,
+    birthday,
+    country,
+    gender,
+    gerdianName,
+    number,
+    village,
+    age,
+    studentPhoto,
+  } = studentInfo;
   console.log(studentInfo);
   // const myCloud = await cloudinary.v2.uploader.upload(studentPhoto, {
   //   folder: "avatars",
   //   width: 150,
   //   crop: "scale",
   // });
-  const admission={
-    
-      admissionType,board,department,classs,session,passingYear,passingAcademy,admissionFee,
-      subject: admissionInfo.subject,
-    name , address , birthday , country , gender , gerdianName ,  number , village ,  age
-    ,
+  const admission = {
+    admissionType,
+    board,
+    department,
+    classs,
+    session,
+    passingYear,
+    passingAcademy,
+    admissionFee,
+    subject: admissionInfo.subject,
+    name,
+    address,
+    birthday,
+    country,
+    gender,
+    gerdianName,
+    number,
+    village,
+    age,
     email,
     // studentPhoto: {
     //   public_id:  myCloud.public_id,
     //   url: myCloud.secure_url,
     // }
-  
   };
-  
- 
+
   await Student.create(admission);
   res.status(200).json({
     success: true,
@@ -33,6 +64,16 @@ exports.studentAdmission = async (req, res, next) => {
   });
 };
 
+exports.chackStudentAdmission = async (req , res, next)=>{
+  const email = req.query.email
+  const student = await Student.findOne({email});
+  if(!student){
+    res.json({ success: false, message: "Student Not fount" })
+
+  }
+  res.json({ success: true, student: student })
+
+}
 exports.getAllStudnt = async (req, res, next) => {
   const student = await Student.find({});
   res.json({ success: true, student: student });
@@ -61,8 +102,8 @@ exports.getSingleStundetInfo = async (req, res, next) => {
 // please not font and department case lowarcase set
 exports.getDepartmentStudent = async (req, res, next) => {
   const { department } = req.query;
-  const departmentOfStudent = await Student.find({ department });
-  console.log(departmentOfStudent, department);
+  const departmentOfStudent = await Student.find({classs: department });
+  console.log(departmentOfStudent , department);
   if (departmentOfStudent.length == 0) {
     res.json({ success: false, message: "Thare Are No Deparment Student" });
   } else {
@@ -173,21 +214,22 @@ exports.addedStudentResult = async (req, res, next) => {
 exports.getStudentResult = async (req, res, next) => {
   try {
     const {
-      educationLevel,
+      
       department,
-      className,
+      classs,
       session,
-      classRoll,
+      roll,
       examName,
     } = req.query;
 
     let student = await Student.findOne({
       $and: [
-        { educationLevel: educationLevel },
+      
         { department },
-        { className },
+        { classs },
         { session },
-        { classRoll },
+        { roll },
+       
       ],
     });
 

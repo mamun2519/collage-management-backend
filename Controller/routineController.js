@@ -17,9 +17,9 @@ exports.getAllDeparmentRoutine = async (req, res, next) => {
 
 exports.getDepartmentRoutine = async (req, res, next) => {
   try {
-    const { department, className, session } = req.query;
+    const { department, classs, session } = req.query;
     const routine = await Routine.find({
-      $and: [{ department }, { className }, { session }],
+      $and: [{ department }, { classs }, { session }],
     });
 
     if (routine.length == 0) {
