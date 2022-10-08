@@ -3,6 +3,8 @@ const Routine = require("../Model/routineModal");
 // note department reoutine jast one crate so use put
 exports.createSchoolRoutine = async (req, res, next) => {
   const routine = req.body;
+  console.log(routine);
+  console.log(routine);
   await Routine.create(routine);
   res.status(200).json({
     success: true,
@@ -35,6 +37,15 @@ exports.getDepartmentRoutine = async (req, res, next) => {
     }
   } catch (e) {
     console.log(e);
+  }
+};
+exports.searchDepartmentRotuine = async (req, res, next) => {
+  const { department } = req.query;
+  const departmentOfStudent = await Routine.find({ classs:department });
+  if (departmentOfStudent.length == 0) {
+    res.json({ success: false, message: "Thare Are No Department Routine" });
+  } else {
+    res.json({ success: true, student: departmentOfStudent });
   }
 };
 
@@ -90,7 +101,7 @@ exports.routineUpdate = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      routine,
+      message: "Routine Update Successful!",
     });
   }
 };
@@ -113,3 +124,20 @@ exports.createExamRoutine = async (req, res, next) => {
     routine,
   });
 };
+
+
+exports.chackClassRoutine = async (req , res, next)=>{
+  const {classs} = req.query
+  console.log(classs);
+  const routine = await Routine.findOne({classs})
+  
+  if (!routine) {
+    res.status(500).json({
+      success: false,
+      message: "Routine Not found",
+    });
+  }
+  else{
+    res.json({ success: true, routine });
+  }
+}

@@ -101,6 +101,7 @@ const studentShema = new mongoose.Schema({
   classs: {
     type: String,
     required: true,
+    trim: true,
   },
   department: {
     type: String,

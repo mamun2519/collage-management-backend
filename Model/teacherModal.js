@@ -14,7 +14,7 @@ const teacherShema = new mongoose.Schema({
     required: true,
   },
   number: {
-    type: Number,
+    type: String,
     required: true,
   },
   educationalQualification: {
@@ -36,10 +36,6 @@ const teacherShema = new mongoose.Schema({
     required: true,
   },
 
-  role: {
-    type: String,
-    default: "Teacher",
-  },
   facebooId: {
     type: String,
     default: "no",

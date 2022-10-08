@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const noticeShema = new mongoose.Schema({
-  department: {
+  classs: {
     type: String,
     required: true,
   },

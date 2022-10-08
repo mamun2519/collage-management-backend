@@ -18,7 +18,7 @@ exports.getDepartmentNotice = async (req, res, next) => {
   try {
     const { department } = req.query;
     console.log(department);
-    const notice = await Notice.find({ department });
+    const notice = await Notice.find({ classs:department });
 
     if (notice.length == 0) {
       res.status(404).json({

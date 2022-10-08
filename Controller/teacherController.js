@@ -1,12 +1,42 @@
 const Teacher = require("../Model/teacherModal");
-
+const cloudinary = require("cloudinary");
 exports.newTeacherAdded = async (req, res, next) => {
-  const teacher = req.body;
-  await Teacher.create(teacher);
-  res.status(200).json({
-    success: true,
-    message: "New Teacher Added Successfull",
-  });
+  try {
+    const myCloud = await cloudinary.v2.uploader.upload(req.body.images, {
+      folder: "products",
+      width: 150,
+      crop: "scale",
+    });
+    const {
+      name,
+      classs,
+      email,
+      number,
+      educationalQualification,
+      collageRole,
+      facebooId,
+      linkedinId,
+    } = req.body;
+    console.log(req.body);
+    // const teacher = req.body;
+    await Teacher.create({
+      name,
+      classs,
+      email,
+      number,
+      educationalQualification,
+      collageRole,
+      facebooId,
+      linkedinId,
+      picture: { public_id: myCloud.public_id, url: myCloud.secure_url },
+    });
+    res.status(200).json({
+      success: true,
+      message: "New Teacher Added Successfull",
+    });
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 exports.getAllTeacher = async (req, res, next) => {
@@ -17,7 +47,7 @@ exports.getAllTeacher = async (req, res, next) => {
 // please note case sensative
 exports.getDepartmentTeacher = async (req, res, next) => {
   const { department } = req.query;
-  const departmentOfStudent = await Teacher.find({ classs:department });
+  const departmentOfStudent = await Teacher.find({ classs: department });
   if (departmentOfStudent.length == 0) {
     res.json({ success: false, message: "Thare Are No Deparment Teacher" });
   } else {

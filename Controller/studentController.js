@@ -102,8 +102,8 @@ exports.getSingleStundetInfo = async (req, res, next) => {
 // please not font and department case lowarcase set
 exports.getDepartmentStudent = async (req, res, next) => {
   const { department } = req.query;
-  const departmentOfStudent = await Student.find({classs: department });
-  console.log(departmentOfStudent , department);
+  const departmentOfStudent = await Student.find({classs:department}).sort({roll: 1});
+
   if (departmentOfStudent.length == 0) {
     res.json({ success: false, message: "Thare Are No Deparment Student" });
   } else {
@@ -161,6 +161,7 @@ exports.StudentDelete = async (req, res, next) => {
 exports.studentInfoUpdate = async (req, res, next) => {
   try {
     let student = await Student.findById(req.params.id);
+    console.log(req.body)
     if (!student) {
       res.status(500).json({
         success: false,
