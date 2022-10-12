@@ -162,32 +162,7 @@ const studentShema = new mongoose.Schema({
   },
 
   result: [
-    {
-      examName: {
-        type: String,
-        required: true,
-      },
-      subjectCode: {
-        type: String,
-        required: true,
-      },
-      subjectName: {
-        type: String,
-        required: true,
-      },
-      minMarks: {
-        type: Number,
-        required: true,
-      },
-      maxMark: {
-        type: Number,
-        required: true,
-      },
-      grade: {
-        type: String,
-        required: true,
-      },
-    },
+   
   ],
   joinDate: {
     type: String,

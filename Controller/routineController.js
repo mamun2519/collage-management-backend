@@ -20,11 +20,11 @@ exports.getAllDeparmentRoutine = async (req, res, next) => {
 exports.getDepartmentRoutine = async (req, res, next) => {
   try {
     const { department, classs, session } = req.query;
-    const routine = await Routine.find({
-      $and: [{ department }, { classs }, { session }],
+    const routine = await Routine.findOne({
+      $and: [{ classs }, { session }],
     });
 
-    if (routine.length == 0) {
+    if (!routine) {
       res.status(404).json({
         success: false,
         message: "Please provide valid routine Information",
@@ -48,6 +48,11 @@ exports.searchDepartmentRotuine = async (req, res, next) => {
     res.json({ success: true, student: departmentOfStudent });
   }
 };
+
+// exports.searchRoutine = async (req , res, next) =>{
+//   const {classs , session} = req.query
+//   const routine = await Routine.find({ classs:department })
+// }
 
 exports.getSingleRoutine = async (req, res, next) => {
   try {

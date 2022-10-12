@@ -65,13 +65,23 @@ exports.studentAdmission = async (req, res, next) => {
 };
 
 exports.chackStudentAdmission = async (req , res, next)=>{
-  const email = req.query.email
-  const student = await Student.findOne({email});
-  if(!student){
-    res.json({ success: false, message: "Student Not fount" })
+  try{
 
+    const email = req.query.email
+    const student = await Student.findOne({email});
+    if(!student){
+      res.json({ success: false, message: "Student Not fount" })
+  
+    }
+    else{
+      res.json({ success: true, student: student })
+    }
   }
-  res.json({ success: true, student: student })
+  catch(e){
+    console.log(e)
+  }
+ 
+ 
 
 }
 exports.getAllStudnt = async (req, res, next) => {
@@ -101,13 +111,23 @@ exports.getSingleStundetInfo = async (req, res, next) => {
 
 // please not font and department case lowarcase set
 exports.getDepartmentStudent = async (req, res, next) => {
+  const page = parseInt(req.query.page) - 1 || 0;
+  const limit = parseInt(req.query.limit) || 5;
+  const search = req.query.search || "";
   const { department } = req.query;
-  const departmentOfStudent = await Student.find({classs:department}).sort({roll: 1});
+  console.log(department)
+  const departmentOfStudent = await Student.find({$and: [{classs:department} ,{ name: { $regex: search, $options: "i" }}]}).sort({roll: 1}).skip(page * limit)
+  .limit(limit);;;
+  // const response = {
+  //   page: page + 1,
+  //   limit,
+  //   notice,
+  // };
 
   if (departmentOfStudent.length == 0) {
     res.json({ success: false, message: "Thare Are No Deparment Student" });
   } else {
-    res.json({ success: true, student: departmentOfStudent });
+    res.json({ success: true, student: departmentOfStudent  , page: page+1 , limit});
   }
 };
 
@@ -185,8 +205,9 @@ exports.studentInfoUpdate = async (req, res, next) => {
 };
 
 exports.addedStudentResult = async (req, res, next) => {
-  const { subjectCode, subjectName, minMarks, maxMark, grade, examName } =
+  const { resultType, result, Gpa } =
     req.body;
+    console.log(req.body);
   let student = await Student.findById(req.params.id);
 
   if (!student) {
@@ -195,15 +216,12 @@ exports.addedStudentResult = async (req, res, next) => {
       message: "Student Not Fount",
     });
   } else {
-    const result = {
-      subjectCode,
-      subjectName,
-      minMarks,
-      maxMark,
-      grade,
-      examName,
+    const results = {
+      resultType,
+      result,
+      Gpa,
     };
-    student.result.push(result);
+    student.result.push(results);
     await student.save({ validateBeforeSave: false });
     res.status(200).json({
       success: true,
@@ -216,24 +234,24 @@ exports.getStudentResult = async (req, res, next) => {
   try {
     const {
       
-      department,
       classs,
       session,
       roll,
       examName,
     } = req.query;
+  
 
     let student = await Student.findOne({
       $and: [
-      
-        { department },
+ 
         { classs },
         { session },
         { roll },
        
       ],
     });
-
+   
+    console.log(student )
     if (!student) {
       res.status(404).json({
         success: false,
@@ -241,22 +259,26 @@ exports.getStudentResult = async (req, res, next) => {
       });
     } else {
       const studentResult = student.result.filter(
-        (exam) => examName == exam.examName
+        (exam) => examName == exam.resultType
       );
-
+      
+      console.log(studentResult[0]);
       if (studentResult.length == 0) {
         res.status(404).json({
           success: false,
           message: "Please provide valid student Information",
         });
       }
+      else{
+        res.status(200).json({
+          success: true,
+          // student
+          result: studentResult,
+          studentInfo: student,
+        });
 
-      res.status(200).json({
-        success: true,
-        // student
-        result: studentResult,
-        studentInfo: student,
-      });
+      }
+      
     }
   } catch (e) {
     console.log(e);

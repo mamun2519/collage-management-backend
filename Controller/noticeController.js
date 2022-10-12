@@ -10,8 +10,18 @@ exports.createNotice = async (req, res, next) => {
 };
 
 exports.getAllNotice = async (req, res, next) => {
-  const notice = await Notice.find({});
-  res.json({ success: true, notice });
+  const page = parseInt(req.query.page) - 1 || 0;
+		const limit = parseInt(req.query.limit) || 5;
+		const search = req.query.search || "";
+    console.log(limit);
+  const notice = await Notice.find({ title: { $regex: search, $options: "i" }}).skip(page * limit)
+  .limit(limit);;
+  const response = {
+    page: page + 1,
+    limit,
+    notice,
+  };
+  res.json({ success: true, notice:response });
 };
 
 exports.getDepartmentNotice = async (req, res, next) => {

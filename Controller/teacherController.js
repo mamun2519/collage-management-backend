@@ -40,8 +40,12 @@ exports.newTeacherAdded = async (req, res, next) => {
 };
 
 exports.getAllTeacher = async (req, res, next) => {
-  const teacher = await Teacher.find({});
-  res.json({ success: true, teacher: teacher });
+  const page = parseInt(req.query.page) - 1 || 0;
+  const limit = parseInt(req.query.limit) || 5;
+  const search = req.query.search || "";
+  console.log(search)
+  const teacher = await Teacher.find({ name: { $regex: search, $options: "i" }}).skip(page * limit).limit(limit)
+  res.json({ success: true, teacher: teacher , page: page+1 , limit});
 };
 
 // please note case sensative
