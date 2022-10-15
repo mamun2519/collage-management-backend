@@ -40,23 +40,35 @@ exports.newTeacherAdded = async (req, res, next) => {
 };
 
 exports.getAllTeacher = async (req, res, next) => {
-  const page = parseInt(req.query.page) - 1 || 0;
+  try{
+    const page = parseInt(req.query.page) - 1 || 0;
   const limit = parseInt(req.query.limit) || 5;
   const search = req.query.search || "";
-  console.log(search)
+ 
   const teacher = await Teacher.find({ name: { $regex: search, $options: "i" }}).skip(page * limit).limit(limit)
   res.json({ success: true, teacher: teacher , page: page+1 , limit});
+  }
+  catch(e){
+    console.log(e);
+  }
+  
 };
 
 // please note case sensative
 exports.getDepartmentTeacher = async (req, res, next) => {
-  const { department } = req.query;
-  const departmentOfStudent = await Teacher.find({ classs: department });
-  if (departmentOfStudent.length == 0) {
-    res.json({ success: false, message: "Thare Are No Deparment Teacher" });
-  } else {
-    res.json({ success: true, student: departmentOfStudent });
+  try{
+    const { department } = req.query;
+    const departmentOfStudent = await Teacher.find({ classs: department });
+    if (departmentOfStudent.length == 0) {
+      res.json({ success: false, message: "Thare Are No Deparment Teacher" });
+    } else {
+      res.json({ success: true, student: departmentOfStudent });
+    }
   }
+  catch(e){
+    console.log(e)
+  }
+ 
 };
 
 exports.getSingleTeacher = async (req, res, next) => {
@@ -105,7 +117,8 @@ exports.teacherInformationUpdate = async (req, res, next) => {
 };
 
 exports.teacherDelete = async (req, res, next) => {
-  const teacher = await Teacher.findById(req.params.id);
+  try{
+    const teacher = await Teacher.findById(req.params.id);
   if (!teacher) {
     res.status(404).json({
       success: false,
@@ -118,4 +131,9 @@ exports.teacherDelete = async (req, res, next) => {
       message: "Teacher data Delete Successfull",
     });
   }
+  }
+  catch(e){
+    console.log(e);
+  }
+  
 };

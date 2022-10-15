@@ -24,21 +24,33 @@ exports.createUser = async (req, res, next) => {
 };
 
 exports.getAllUser = async (req, res, next) => {
-  const page = parseInt(req.query.page) - 1 || 0;
-  const limit = parseInt(req.query.limit) || 5;
-  const search = req.query.search || "";
-  const user = await User.find({$and: [{role:"user"} ,{ name: { $regex: search, $options: "i" }}]}).skip(page * limit)
-  .limit(limit);
-  res.json({ success: true, user , page: page+1 , limit });
+  try{
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 5;
+    const search = req.query.search || "";
+    const user = await User.find({
+      $and: [{ role: "user" }, { name: { $regex: search, $options: "i" } }],
+    })
+      .skip(page * limit)
+      .limit(limit);
+    res.json({ success: true, user, page: page + 1, limit });
+  }
+  catch(e){
+    console.log(e)
+  }
+
 };
 
 exports.getAllAdmin = async (req, res, next) => {
   const page = parseInt(req.query.page) - 1 || 0;
   const limit = parseInt(req.query.limit) || 5;
   const search = req.query.search || "";
-  const user = await User.find({$and: [{role:"admin"} ,{ name: { $regex: search, $options: "i" }}]}).skip(page * limit)
-  .limit(limit);
-  res.json({ success: true, user , page: page+1 , limit });
+  const user = await User.find({
+    $and: [{ role: "admin" }, { name: { $regex: search, $options: "i" } }],
+  })
+    .skip(page * limit)
+    .limit(limit);
+  res.json({ success: true, user, page: page + 1, limit });
 };
 
 exports.getSinleUser = async (req, res, next) => {
@@ -133,6 +145,7 @@ exports.cheackAdmin = async (req, res, next) => {
   try {
     const email = req.params.email;
     const user = await User.findOne({ email });
+    console.log(email);
     if (!user) {
       res.status(404).json({ message: "User Not Found" });
     } else {

@@ -26,9 +26,13 @@ exports.getAllNotice = async (req, res, next) => {
 
 exports.getDepartmentNotice = async (req, res, next) => {
   try {
+    const page = parseInt(req.query.page) - 1 || 0;
+  const limit = parseInt(req.query.limit) || 5;
+  const search = req.query.search || "";
     const { department } = req.query;
-    console.log(department);
-    const notice = await Notice.find({ classs:department });
+   
+    const notice = await Notice.find({$and: [{classs:department} ,{ title: { $regex: search, $options: "i" }}]}).skip(page * limit)
+    .limit(limit);
 
     if (notice.length == 0) {
       res.status(404).json({
@@ -39,6 +43,7 @@ exports.getDepartmentNotice = async (req, res, next) => {
       res.status(200).json({
         success: true,
         notice,
+        page: page+1 , limit
       });
     }
   } catch (e) {

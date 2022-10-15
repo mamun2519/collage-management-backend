@@ -2,91 +2,104 @@ const Student = require("../Model/studentModal");
 const cloudinary = require("cloudinary");
 
 exports.studentAdmission = async (req, res, next) => {
-  const { studentInfo, admissionInfo, email } = req.body;
-  const {
-    admissionType,
-    board,
-    department,
-    classs,
-    session,
-    passingYear,
-    passingAcademy,
-    admissionFee,
-  } = admissionInfo.data;
-  const {
-    name,
-    address,
-    birthday,
-    country,
-    gender,
-    gerdianName,
-    number,
-    village,
-    age,
-    studentPhoto,
-  } = studentInfo;
-  console.log(studentInfo);
-  // const myCloud = await cloudinary.v2.uploader.upload(studentPhoto, {
-  //   folder: "avatars",
-  //   width: 150,
-  //   crop: "scale",
-  // });
-  const admission = {
-    admissionType,
-    board,
-    department,
-    classs,
-    session,
-    passingYear,
-    passingAcademy,
-    admissionFee,
-    subject: admissionInfo.subject,
-    name,
-    address,
-    birthday,
-    country,
-    gender,
-    gerdianName,
-    number,
-    village,
-    age,
-    email,
-    // studentPhoto: {
-    //   public_id:  myCloud.public_id,
-    //   url: myCloud.secure_url,
-    // }
-  };
+  try {
+    const { studentInfo, admissionInfo, email } = req.body;
+    console.log(admissionInfo);
+    const {
+      admissionType,
+      board,
+      department,
+      classs,
+      session,
+      passingYear,
+      passingAcademy,
+      admissionFee,
+    } = admissionInfo.data;
+    const {
+      name,
+      address,
+      birthday,
+      country,
+      gender,
+      gerdianName,
+      number,
+      village,
+      age,
+    } = studentInfo;
+    console.log(studentInfo);
+    // const myCloud = await cloudinary.v2.uploader.upload(images, {
+    //   folder: "avatars",
+    //   width: 150,
+    //   crop: "scale",
+    // });
+    const admission = {
+      admissionType,
+      board,
+      department,
+      classs,
+      session,
+      passingYear,
+      passingAcademy,
+      admissionFee,
+      subject: admissionInfo.subject,
+      name,
+      address,
+      birthday,
+      country,
+      gender,
+      gerdianName,
+      number,
+      village,
+      age,
+      email,
+      studentPhoto: {
+        public_id: "xxx",
+        url: "xxx",
+      },
+    };
 
-  await Student.create(admission);
-  res.status(200).json({
-    success: true,
-    message: "Admission Successfull",
-  });
+    await Student.create(admission);
+    res.status(200).json({
+      success: true,
+      message: "Admission Successfull",
+    });
+  } catch (e) {
+    console.log(e);
+  }
 };
 
-exports.chackStudentAdmission = async (req , res, next)=>{
-  try{
-
-    const email = req.query.email
-    const student = await Student.findOne({email});
-    if(!student){
-      res.json({ success: false, message: "Student Not fount" })
-  
+exports.chackStudentAdmission = async (req, res, next) => {
+  try {
+    const email = req.query.email;
+    const student = await Student.findOne({ email });
+    if (!student) {
+      res.json({ success: false, message: "Student Not fount" });
+    } else {
+      res.json({ success: true, student: student });
     }
-    else{
-      res.json({ success: true, student: student })
-    }
+  } catch (e) {
+    console.log(e);
   }
-  catch(e){
-    console.log(e)
-  }
- 
- 
-
-}
+};
 exports.getAllStudnt = async (req, res, next) => {
-  const student = await Student.find({});
-  res.json({ success: true, student: student });
+  try {
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 5;
+    const search = req.query.search || "";
+    console.log(limit);
+    const student = await Student.find({
+      $and: [
+        {},
+        { verifay: false },
+        { name: { $regex: search, $options: "i" } },
+      ],
+    })
+      .skip(page * limit)
+      .limit(limit);
+    res.json({ success: true, student: student, page: page + 1, limit });
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 exports.getSingleStundetInfo = async (req, res, next) => {
@@ -111,23 +124,39 @@ exports.getSingleStundetInfo = async (req, res, next) => {
 
 // please not font and department case lowarcase set
 exports.getDepartmentStudent = async (req, res, next) => {
-  const page = parseInt(req.query.page) - 1 || 0;
-  const limit = parseInt(req.query.limit) || 5;
-  const search = req.query.search || "";
-  const { department } = req.query;
-  console.log(department)
-  const departmentOfStudent = await Student.find({$and: [{classs:department} ,{ name: { $regex: search, $options: "i" }}]}).sort({roll: 1}).skip(page * limit)
-  .limit(limit);;;
-  // const response = {
-  //   page: page + 1,
-  //   limit,
-  //   notice,
-  // };
+  try {
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 5;
+    const search = req.query.search || "";
+    const { department } = req.query;
+    console.log(department);
+    const departmentOfStudent = await Student.find({
+      $and: [
+        { classs: department },
+        { name: { $regex: search, $options: "i" } },
+      ],
+    })
+      .sort({ roll: 1 })
+      .skip(page * limit)
+      .limit(limit);
+    // const response = {
+    //   page: page + 1,
+    //   limit,
+    //   notice,
+    // };
 
-  if (departmentOfStudent.length == 0) {
-    res.json({ success: false, message: "Thare Are No Deparment Student" });
-  } else {
-    res.json({ success: true, student: departmentOfStudent  , page: page+1 , limit});
+    if (departmentOfStudent.length == 0) {
+      res.json({ success: false, message: "Thare Are No Deparment Student" });
+    } else {
+      res.json({
+        success: true,
+        student: departmentOfStudent,
+        page: page + 1,
+        limit,
+      });
+    }
+  } catch (e) {
+    console.log(e);
   }
 };
 
@@ -163,25 +192,29 @@ exports.searchStudentInformation = async (req, res, next) => {
 };
 
 exports.StudentDelete = async (req, res, next) => {
-  const student = await Student.findById(req.params.id);
-  if (!student) {
-    res.status(404).json({
-      success: false,
-      message: "Student Not Found",
-    });
-  } else {
-    student.remove();
-    res.status(200).json({
-      success: true,
-      message: "Student Delete Successfull",
-    });
+  try {
+    const student = await Student.findById(req.params.id);
+    if (!student) {
+      res.status(404).json({
+        success: false,
+        message: "Student Not Found",
+      });
+    } else {
+      student.remove();
+      res.status(200).json({
+        success: true,
+        message: "Student Delete Successfull",
+      });
+    }
+  } catch (e) {
+    console.log(e);
   }
 };
 
 exports.studentInfoUpdate = async (req, res, next) => {
   try {
     let student = await Student.findById(req.params.id);
-    console.log(req.body)
+    console.log(req.body);
     if (!student) {
       res.status(500).json({
         success: false,
@@ -205,53 +238,43 @@ exports.studentInfoUpdate = async (req, res, next) => {
 };
 
 exports.addedStudentResult = async (req, res, next) => {
-  const { resultType, result, Gpa } =
-    req.body;
+  try {
+    const { resultType, result, Gpa } = req.body;
     console.log(req.body);
-  let student = await Student.findById(req.params.id);
+    let student = await Student.findById(req.params.id);
 
-  if (!student) {
-    res.status(500).json({
-      success: false,
-      message: "Student Not Fount",
-    });
-  } else {
-    const results = {
-      resultType,
-      result,
-      Gpa,
-    };
-    student.result.push(results);
-    await student.save({ validateBeforeSave: false });
-    res.status(200).json({
-      success: true,
-      message: "Student Result Publish Successfull",
-    });
+    if (!student) {
+      res.status(500).json({
+        success: false,
+        message: "Student Not Fount",
+      });
+    } else {
+      const results = {
+        resultType,
+        result,
+        Gpa,
+      };
+      student.result.push(results);
+      await student.save({ validateBeforeSave: false });
+      res.status(200).json({
+        success: true,
+        message: "Student Result Publish Successfull",
+      });
+    }
+  } catch (e) {
+    console.log(e);
   }
 };
 
 exports.getStudentResult = async (req, res, next) => {
   try {
-    const {
-      
-      classs,
-      session,
-      roll,
-      examName,
-    } = req.query;
-  
+    const { classs, session, roll, examName } = req.query;
 
     let student = await Student.findOne({
-      $and: [
- 
-        { classs },
-        { session },
-        { roll },
-       
-      ],
+      $and: [{ classs }, { session }, { roll }],
     });
-   
-    console.log(student )
+
+    console.log(student);
     if (!student) {
       res.status(404).json({
         success: false,
@@ -261,24 +284,21 @@ exports.getStudentResult = async (req, res, next) => {
       const studentResult = student.result.filter(
         (exam) => examName == exam.resultType
       );
-      
+
       console.log(studentResult[0]);
       if (studentResult.length == 0) {
         res.status(404).json({
           success: false,
           message: "Please provide valid student Information",
         });
-      }
-      else{
+      } else {
         res.status(200).json({
           success: true,
           // student
           result: studentResult,
           studentInfo: student,
         });
-
       }
-      
     }
   } catch (e) {
     console.log(e);
