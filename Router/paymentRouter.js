@@ -1,10 +1,10 @@
 const express = require("express");
 
-const { sslPaymentGetWay,  paymentGetWay} = require("../Controller/paymentController");
+const {   paymentGetWay} = require("../Controller/paymentController");
 const router = express.Router()
 
 // ssl commerze 
-router.post("/" , sslPaymentGetWay)
+// router.post("/" , sslPaymentGetWa)
 router.post("/create-payment-intent" , paymentGetWay)
 
 module.exports = router
