@@ -4,7 +4,7 @@ require("dotenv").config();
 const cloudinary = require("cloudinary").v2;
 const port = process.env.PORT || 5000;
 
-// database configaretion
+// database configaretio
 database();
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
