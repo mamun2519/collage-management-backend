@@ -31,8 +31,14 @@ exports.createEvent = async (req , res, next)=>{
 }
 
 exports.getAllEvent = async (req , res , next) =>{
-      const events= await EventDB.find({});
-  res.json({ success: true, events: events });
+  try{
+    const events= await EventDB.find({});
+    res.json({ success: true, events: events });
+  }
+  catch(e){
+    console.log(e)
+  }
+    
 }
 
 exports.getSingaleEvent = async (req, res, next) => {

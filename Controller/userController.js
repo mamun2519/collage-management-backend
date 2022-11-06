@@ -42,15 +42,21 @@ exports.getAllUser = async (req, res, next) => {
 };
 
 exports.getAllAdmin = async (req, res, next) => {
-  const page = parseInt(req.query.page) - 1 || 0;
-  const limit = parseInt(req.query.limit) || 5;
-  const search = req.query.search || "";
-  const user = await User.find({
-    $and: [{ role: "admin" }, { name: { $regex: search, $options: "i" } }],
-  })
-    .skip(page * limit)
-    .limit(limit);
-  res.json({ success: true, user, page: page + 1, limit });
+  try{
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 5;
+    const search = req.query.search || "";
+    const user = await User.find({
+      $and: [{ role: "admin" }, { name: { $regex: search, $options: "i" } }],
+    })
+      .skip(page * limit)
+      .limit(limit);
+    res.json({ success: true, user, page: page + 1, limit });
+  }
+  catch(e){
+    console.log(e)
+  }
+ 
 };
 
 exports.getSinleUser = async (req, res, next) => {
@@ -72,21 +78,27 @@ exports.getSinleUser = async (req, res, next) => {
     console.log(e);
   }
 };
-
+// ,..............
 exports.deleteUser = async (req, res, next) => {
-  const user = await User.findById(req.params.id);
-  if (!user) {
-    res.status(404).json({
-      success: false,
-      message: "user Not Found",
-    });
-  } else {
-    user.remove();
-    res.status(200).json({
-      success: true,
-      message: "User Delete Successfull",
-    });
+  try{
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      res.status(404).json({
+        success: false,
+        message: "user Not Found",
+      });
+    } else {
+      user.remove();
+      res.status(200).json({
+        success: true,
+        message: "User Delete Successfull",
+      });
+    }
   }
+  catch(e){
+    console.log(e);
+  }
+
 };
 
 exports.createAdmin = async (req, res, next) => {
