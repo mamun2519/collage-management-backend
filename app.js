@@ -27,9 +27,9 @@ app.use("/v1/payment", paymentRouter);
 app.use("/v1/user", userRouter);
 app.use("/v1/event", eventRouter);
 
-app.use("/", (req, res) => {
-  res.send("hellw world");
-});
+// app.use("/", (req, res) => {
+//   res.send("hellw worldssssssssssssssss");
+// });
 
 
 app.use(errorHandelling)

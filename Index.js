@@ -11,7 +11,9 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
-
+app.get("/", (req, res) => {
+  res.send("hellw worldssssssssssssssss");
+});
 // surver run
 app.listen(port, () => {
   console.log("server is run start", port);
