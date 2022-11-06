@@ -5,11 +5,9 @@ const fileUpload = require("express-fileupload");
 // middelwar
 app.use(express.json());
 app.use(fileUpload());
-app.use(express.static("public"));
+// app.use(express.static("public"));
 
-app.use(cors({
-  origin: "http://localhost:3000",
-}))
+app.use(cors())
 
 // all router model
 const studentRouter = require("./Router/studentRouter");
