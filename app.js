@@ -18,7 +18,7 @@ const paymentRouter = require("./Router/paymentRouter");
 const errorHandelling = require("./utilitis/errorHandeling");
 const userRouter = require("./Router/userRouter")
 const eventRouter = require("./Router/eventRouter")
-// all Route api
+// all Route ap
 app.use("/v1/student", studentRouter);
 app.use("/v1/teacher", teacherRouter);
 app.use("/v1/routine", routineRouter);
