@@ -7,7 +7,9 @@ app.use(express.json());
 app.use(fileUpload());
 // app.use(express.static("public"));
 
-app.use(cors())
+app.use(cors({
+      origin: "*"
+}))
 
 // all router model
 const studentRouter = require("./Router/studentRouter");
