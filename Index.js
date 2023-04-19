@@ -2,7 +2,7 @@ const app = require("./app");
 const database = require("./databaseConfig/database");
 require("dotenv").config();
 const cloudinary = require("cloudinary").v2;
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5000
 
 // database configareti
 database();
