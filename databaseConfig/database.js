@@ -9,7 +9,7 @@ const database = () => {
       useUnifiedTopology: true,
     })
     .then((data) => {
-      console.log("mongoose was cannect");
+      console.log("mongoose was connect");
     })
     .catch((error) => {
       console.log("this is error", error);
