@@ -24,7 +24,7 @@ exports.createUser = async (req, res, next) => {
 };
 
 exports.getAllUser = async (req, res, next) => {
-  try{
+  try {
     const page = parseInt(req.query.page) - 1 || 0;
     const limit = parseInt(req.query.limit) || 5;
     const search = req.query.search || "";
@@ -34,15 +34,13 @@ exports.getAllUser = async (req, res, next) => {
       .skip(page * limit)
       .limit(limit);
     res.json({ success: true, user, page: page + 1, limit });
+  } catch (e) {
+    console.log(e);
   }
-  catch(e){
-    console.log(e)
-  }
-
 };
 
 exports.getAllAdmin = async (req, res, next) => {
-  try{
+  try {
     const page = parseInt(req.query.page) - 1 || 0;
     const limit = parseInt(req.query.limit) || 5;
     const search = req.query.search || "";
@@ -52,11 +50,9 @@ exports.getAllAdmin = async (req, res, next) => {
       .skip(page * limit)
       .limit(limit);
     res.json({ success: true, user, page: page + 1, limit });
+  } catch (e) {
+    console.log(e);
   }
-  catch(e){
-    console.log(e)
-  }
- 
 };
 
 exports.getSinleUser = async (req, res, next) => {
@@ -80,7 +76,7 @@ exports.getSinleUser = async (req, res, next) => {
 };
 // ,..............
 exports.deleteUser = async (req, res, next) => {
-  try{
+  try {
     const user = await User.findById(req.params.id);
     if (!user) {
       res.status(404).json({
@@ -94,11 +90,9 @@ exports.deleteUser = async (req, res, next) => {
         message: "User Delete Successfull",
       });
     }
-  }
-  catch(e){
+  } catch (e) {
     console.log(e);
   }
-
 };
 
 exports.createAdmin = async (req, res, next) => {
@@ -156,6 +150,7 @@ exports.createAdmin = async (req, res, next) => {
 exports.cheackAdmin = async (req, res, next) => {
   try {
     const email = req.params.email;
+    console.log(email);
     const user = await User.findOne({ email });
     console.log(email);
     if (!user) {
